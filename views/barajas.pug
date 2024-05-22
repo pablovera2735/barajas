@@ -1,0 +1,21 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title #{title}
+    link(rel="stylesheet", href="/stylesheets/barajas.css")
+    script(src="../models/barajas.js")
+  body
+    #container
+      each palo, i in ['oros', 'copas', 'espadas', 'bastos']
+        .suit
+          each carta in cartas.filter(c => c.palo === palo)
+            .card
+              img(src=carta.url, alt=`${carta.numero} de ${carta.palo}`)
+    .buttons
+      button(onclick="barajar()") Barajar
+      button(onclick="ordenar()") Ordenar
+      button(onclick="extraer()") Extraer
+      button(onclick="reset()") Reset
+      button(onclick="salir()") Salir
