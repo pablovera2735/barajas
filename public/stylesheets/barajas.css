@@ -1,25 +1,72 @@
 body {
-    padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  }
-  
-  a {
-    color: #00B7FF;
-  }
-  #container {
-    display: flex;
-    flex-wrap: wrap;
-    border: 1px solid red;
-    margin: auto;
-  }
-  
-  .card{
-        padding: 0%;
-        display: inline-block;
-        width: 100px;
-        margin: 5px;
-  }
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+  margin: 0;
+}
 
-  button{
-    margin-left: 50px;
-  }
+h1 {
+  text-align: center;
+}
+
+#ordenar-por {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#ordenar-por img {
+  width: 100px;
+  height: auto;
+  margin-right: 20px;
+}
+
+#ordenar-por div {
+  display: flex;
+  flex-direction: column;
+}
+
+#ordenar-por h2 {
+  margin: 0 0 10px 0;
+}
+
+#ordenar-por form {
+  display: flex;
+  flex-direction: column;
+}
+
+#container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  border: 1px solid red;
+  width: 80vw;
+  margin: auto;
+}
+
+.card {
+  width: 70px;
+  height: 100px;
+  margin: 15px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+form {
+  display: inline-block;
+  margin: 0 5px;
+  padding-left: 150px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+input[type="radio"] {
+  margin-right: 5px;
+}

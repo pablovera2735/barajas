@@ -8,16 +8,15 @@ router.get('/', function(req, res) {
   res.render('registrar');
 });
 
-
 router.get('/login', function(req, res) {
-  res.render('login');
+  res.render('login', { error: '' });
 });
 
 router.post('/login', async function(req, res) {
   const { correo, password } = req.body;
 
   if (!correo || !password) {
-    return res.render('login');
+    return res.render('login', { error: 'Correo y contraseña son requeridos.' });
   }
 
   try {
@@ -25,7 +24,7 @@ router.post('/login', async function(req, res) {
     if (existingUser) {
       if (existingUser.bannedTime && new Date(existingUser.bannedTime) > new Date()) {
         const banTimeLeft = Math.round((new Date(existingUser.bannedTime) - new Date()) / 1000 / 60);
-        return res.render('login', { error: `Your account is locked. Try again in ${banTimeLeft} minutes.` });
+        return res.render('login', { error: `Su cuenta está bloqueada. Inténtelo de nuevo en ${banTimeLeft} minutos.` });
       }
 
       const passwordMatch = await bcrypt.compare(password, existingUser.password);
@@ -57,7 +56,7 @@ router.post('/login', async function(req, res) {
         }
 
         await existingUser.update({ nTries: newTries, bannedTime: bannedUntil });
-        res.render('login');
+        res.render('login', { error: 'Contraseña incorrecta. Inténtelo de nuevo.' });
       }
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -65,8 +64,33 @@ router.post('/login', async function(req, res) {
         id: correo,
         password: hashedPassword
       });
-      res.redirect('/login', { error: 'Account created. Please log in.' });
+      res.render('login', { error: 'Cuenta creada. Por favor, inicie sesión.' });
     }
+  } catch (error) {
+    console.error('Error processing request:', error);
+    res.status(500).send('Error processing request: ' + error.message);
+  }
+});
+
+router.post('/registrar', async function(req, res) {
+  const { correo, password } = req.body;
+
+  if (!correo || !password) {
+    return res.render('registrar', { error: 'Correo y contraseña son requeridos.' });
+  }
+
+  try {
+    const existingUser = await User.findOne({ where: { id: correo } });
+    if (existingUser) {
+      return res.render('registrar', { error: 'El usuario ya existe.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.create({
+      id: correo,
+      password: hashedPassword
+    });
+    res.render('login', { error: 'Cuenta creada. Por favor, inicie sesión.' });
   } catch (error) {
     console.error('Error processing request:', error);
     res.status(500).send('Error processing request: ' + error.message);

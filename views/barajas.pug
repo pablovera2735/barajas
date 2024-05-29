@@ -1,21 +1,41 @@
 doctype html
-html(lang="en")
+html(lang="es")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title #{title}
     link(rel="stylesheet", href="/stylesheets/barajas.css")
-    script(src="../models/barajas.js")
   body
+    h1 Baraja de Naipes Españoles
+
+    #ordenar-por
+      if extraida
+        img(src=extraida.url, alt="Carta extraída")
+      else
+        img(src="/Trasera/Trasera.png", alt="Parte trasera de la carta")
+      div
+        h2 Ordenar por:
+        form(action="/barajas/ordenar", method="post")
+          div
+            input(type="radio", name="criterio", value="palo-valor" id="palo-valor" checked)
+            label(for="palo-valor") Palo y valor
+          div
+            input(type="radio", name="criterio", value="valor" id="valor")
+            label(for="valor") Solo valor
+          button(type="submit") Ordenar
+
     #container
-      each palo, i in ['oros', 'copas', 'espadas', 'bastos']
-        .suit
-          each carta in cartas.filter(c => c.palo === palo)
-            .card
-              img(src=carta.url, alt=`${carta.numero} de ${carta.palo}`)
-    .buttons
-      button(onclick="barajar()") Barajar
-      button(onclick="ordenar()") Ordenar
-      button(onclick="extraer()") Extraer
-      button(onclick="reset()") Reset
-      button(onclick="salir()") Salir
+      each carta in cartas
+        .card(style=`background-image: url(${carta.url})`)
+
+    form(action="/barajas/barajar", method="post")
+      button(type="submit") Barajar
+    form(action="/barajas/extraer", method="post")
+      button(type="submit") Extraer
+    form(action="/barajas/devolver", method="post")
+      button(type="submit") Devolver
+    form(action="/barajas/reset", method="post")
+      button(type="submit") Reset
+    form(action="/login", method="post")
+      button(type="submit") Salir
+

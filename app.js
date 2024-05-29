@@ -3,28 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const session = require('express-session')
 
 var indexRouter = require('./routes/index');
 var barajasRouter = require('./routes/barajas');
 
 var app = express();
 
-app.use(session({
-  secret: 'secret_key',  // Reemplaza 'secret_key' con una clave secreta real
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false,  // En producción, deberías considerar establecer esto en true
-    maxAge: 1000 * 60 * 60 * 24 // 24 horas
-  }
-}));
 
-// Session-persistent middleware to access user session
-app.use((req, res, next) => {
-  res.locals.session = req.session;
-  next();
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

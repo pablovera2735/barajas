@@ -8,7 +8,7 @@ class Baraja {
         this.originalState = [];
     }
 
-    async cargarCartas() {
+     cargarCartas() {
         return new Promise((resolve, reject) => {
             fs.readdir(this.cartasDir, (err, files) => {
                 if (err) {
@@ -28,12 +28,6 @@ class Baraja {
                             numero: numero,
                             paloCode: paloCode
                         };
-                    })
-                    .sort((a, b) => {
-                        if (a.paloCode === b.paloCode) {
-                            return a.numero - b.numero;
-                        }
-                        return a.paloCode.localeCompare(b.paloCode);
                     });
                 this.originalState = [...this.cartas];
                 resolve(this.cartas);
@@ -46,20 +40,34 @@ class Baraja {
             const j = Math.floor(Math.random() * (i + 1));
             [this.cartas[i], this.cartas[j]] = [this.cartas[j], this.cartas[i]];
         }
-        return this.cartas;
+    }
+
+    ordenarCartas() {
+        const palosOrden = ['oros', 'copas', 'espadas', 'bastos'];
+        this.cartas.sort((a, b) => {
+            let comparison = palosOrden.indexOf(a.palo) - palosOrden.indexOf(b.palo);
+            if (comparison === 0) {
+                return a.numero - b.numero;
+            }
+            return comparison;
+        });
+    }
+
+    ordenarPorValor() {
+        this.cartas.sort((a, b) => a.numero - b.numero);
     }
 
     extraer() {
         return this.cartas.shift();
     }
 
-    reset() {
-        this.cartas = [...this.originalState];
-        return this.cartas;
+    devolverCarta(carta) {
+        this.cartas.unshift(carta);
     }
 
-    salir() {
-        this.reset();
+    reset() {
+        this.cartas = [...this.originalState];
+        this.ordenarCartas();
     }
 }
 
