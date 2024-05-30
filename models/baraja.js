@@ -22,7 +22,6 @@ class Baraja {
         return new Naipe(numero, palos[paloCode], `/images/${file}`);
       });
 
-    // Limitar el número de cartas a numCartas
     this.cartas = this.cartas.slice(0, this.numCartas);
     this.originalState = [...this.cartas];
   }
