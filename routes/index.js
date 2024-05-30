@@ -90,7 +90,7 @@ router.post('/registrar', async function(req, res) {
       id: correo,
       password: hashedPassword
     });
-    res.render('login', { error: 'Cuenta creada. Por favor, inicie sesión.' });
+    res.redirect('/login');
   } catch (error) {
     console.error('Error processing request:', error);
     res.status(500).send('Error processing request: ' + error.message);

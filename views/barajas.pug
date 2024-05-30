@@ -10,7 +10,7 @@ html(lang="es")
 
     #ordenar-por
       if extraida
-        img(src=extraida.url, alt="Carta extraída")
+        img(src=extraida.rutaImagen, alt="Carta extraída")
       else
         img(src="/Trasera/Trasera.png", alt="Parte trasera de la carta")
       div
@@ -26,7 +26,7 @@ html(lang="es")
 
     #container
       each carta in cartas
-        .card(style=`background-image: url(${carta.url})`)
+        .card(style=`background-image: url(${carta.rutaImagen})`)
 
     form(action="/barajas/barajar", method="post")
       button(type="submit") Barajar
@@ -38,4 +38,3 @@ html(lang="es")
       button(type="submit") Reset
     form(action="/login", method="post")
       button(type="submit") Salir
-
