@@ -57,6 +57,10 @@ router.post('/extraer', async (req, res) => {
         baraja.reset();
         carta = null;
         cartasExtraidas = [];
+      } else {
+        if (cartasExtraidas.length > 2) {
+          cartasExtraidas.shift();
+        }
       }
       res.redirect('/barajas');
     } else {
@@ -76,7 +80,7 @@ router.post('/devolver', async (req, res) => {
       carta = cartasExtraidas[cartasExtraidas.length - 1] || null;
 
       if (cartasExtraidas.length === 0) {
-        baraja.reset();
+        baraja.cargarCartas();
       }
       res.redirect('/barajas');
     } else {
