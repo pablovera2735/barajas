@@ -3,9 +3,13 @@ var router = express.Router();
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const transporter = require('../helper/email');
+const crypto = require('crypto');
+
+
+let verificationTokens = {};
 
 router.get('/', function(req, res) {
-  res.render('registrar');
+  res.render('registrar', { error: '' });
 });
 
 router.get('/login', function(req, res) {
@@ -22,6 +26,10 @@ router.post('/login', async function(req, res) {
   try {
     const existingUser = await User.findOne({ where: { id: correo } });
     if (existingUser) {
+      if (verificationTokens[correo]) {
+        return res.render('login', { error: 'Debe verificar su cuenta antes de iniciar sesión.' });
+      }
+
       if (existingUser.bannedTime && new Date(existingUser.bannedTime) > new Date()) {
         const banTimeLeft = Math.round((new Date(existingUser.bannedTime) - new Date()) / 1000 / 60);
         return res.render('login', { error: `Su cuenta está bloqueada. Inténtelo de nuevo en ${banTimeLeft} minutos.` });
@@ -39,7 +47,7 @@ router.post('/login', async function(req, res) {
           newTries = 0;
 
           let mailOptions = {
-            from: 'al.pablo.vera.garcia@iesportada.org',
+            from: process.env.EMAIL_USER,
             to: existingUser.id,
             subject: 'Notificación de Cuenta Bloqueada',
             text: 'Su cuenta ha sido bloqueada temporalmente debido a múltiples intentos fallidos de inicio de sesión.',
@@ -59,12 +67,7 @@ router.post('/login', async function(req, res) {
         res.render('login', { error: 'Contraseña incorrecta. Inténtelo de nuevo.' });
       }
     } else {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await User.create({
-        id: correo,
-        password: hashedPassword
-      });
-      res.render('login', { error: 'Cuenta creada. Por favor, inicie sesión.' });
+      res.render('login', { error: 'No existe una cuenta con este correo electrónico.' });
     }
   } catch (error) {
     console.error('Error processing request:', error);
@@ -72,7 +75,7 @@ router.post('/login', async function(req, res) {
   }
 });
 
-router.post('/registrar', async function(req, res) {
+router.post('/', async function(req, res) {
   const { correo, password } = req.body;
 
   if (!correo || !password) {
@@ -90,10 +93,57 @@ router.post('/registrar', async function(req, res) {
       id: correo,
       password: hashedPassword
     });
-    res.redirect('/login');
+
+
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const verificationLink = `${req.protocol}://${req.get('host')}/verify?token=${token}&email=${correo}`;
+
+
+    verificationTokens[correo] = token;
+
+    let mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: correo,
+      subject: 'Verificación de Cuenta',
+      text: `Por favor, verifique su cuenta haciendo clic en el siguiente enlace: ${verificationLink}`,
+      html: `<b>Por favor, verifique su cuenta haciendo clic en el siguiente enlace:</b> <a href="${verificationLink}">${verificationLink}</a>`
+    };
+
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.log('Error sending email:', error);
+      } else {
+        console.log('Email sent:', info.response);
+      }
+    });
+
+    res.render('login', { error: 'Cuenta creada. Verifique su correo electrónico.' });
   } catch (error) {
     console.error('Error processing request:', error);
     res.status(500).send('Error processing request: ' + error.message);
+  }
+});
+
+
+router.get('/verify', async function(req, res) {
+  const { token, email } = req.query;
+
+  try {
+    const user = await User.findOne({ where: { id: email } });
+    if (user) {
+      if (verificationTokens[email] === token) {
+        delete verificationTokens[email];
+        res.render('login', { error: 'Cuenta verificada. Por favor, inicie sesión.' });
+      } else {
+        res.status(400).send('Token de verificación inválido o expirado.');
+      }
+    } else {
+      res.status(400).send('Token de verificación inválido o expirado.');
+    }
+  } catch (error) {
+    console.error('Error verifying account:', error);
+    res.status(500).send('Error verifying account: ' + error.message);
   }
 });
 

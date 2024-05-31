@@ -49,7 +49,9 @@ class Baraja {
   }
 
   extraer() {
-    return this.cartas.shift();
+    const randomIndex = Math.floor(Math.random() * this.cartas.length);
+    const cartaExtraida = this.cartas.splice(randomIndex, 1)[0];
+    return cartaExtraida;
   }
 
   devolverCarta(carta) {

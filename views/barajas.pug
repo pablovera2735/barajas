@@ -10,7 +10,9 @@ html(lang="es")
 
     #ordenar-por
       if extraida
-        img(src=extraida.rutaImagen, alt="Carta extraída")
+        .stack
+          each cartaExtraida, index in cartasExtraidas
+            .card.extraida(style=`background-image: url(${cartaExtraida.rutaImagen}); z-index: ${index}; top: ${index * 10}px; left: ${index * 10}px;`)
       else
         img(src="/Trasera/Trasera.png", alt="Parte trasera de la carta")
       div
