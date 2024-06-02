@@ -1,10 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const transporter = require('../helper/email');
 const crypto = require('crypto');
-
 
 let verificationTokens = {};
 
@@ -37,6 +36,7 @@ router.post('/login', async function(req, res) {
 
       const passwordMatch = await bcrypt.compare(password, existingUser.password);
       if (passwordMatch) {
+        req.session.userId = existingUser.id;
         await existingUser.update({ lastLogin: new Date(), nTries: 0 });
         res.redirect('/barajas');
       } else {
@@ -94,11 +94,8 @@ router.post('/', async function(req, res) {
       password: hashedPassword
     });
 
-
-
     const token = crypto.randomBytes(32).toString('hex');
     const verificationLink = `${req.protocol}://${req.get('host')}/verify?token=${token}&email=${correo}`;
-
 
     verificationTokens[correo] = token;
 
@@ -124,7 +121,6 @@ router.post('/', async function(req, res) {
     res.status(500).send('Error processing request: ' + error.message);
   }
 });
-
 
 router.get('/verify', async function(req, res) {
   const { token, email } = req.query;

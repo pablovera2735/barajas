@@ -6,7 +6,15 @@ const baraja = new Baraja(20);
 let cartasExtraidas = [];
 let carta = null;
 
-router.get('/', async (req, res) => {
+function ensureAuthenticated(req, res, next) {
+  if (req.session.userId) {
+    return next();
+  } else {
+    res.redirect('/login');
+  }
+}
+
+router.get('/', ensureAuthenticated, async (req, res) => {
   try {
     if (!baraja.cartas || baraja.cartas.length === 0) {
       await baraja.cargarCartas();
@@ -19,7 +27,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/barajar', async (req, res) => {
+router.post('/barajar', ensureAuthenticated, async (req, res) => {
   try {
     baraja.barajar();
     carta = null;
@@ -31,7 +39,7 @@ router.post('/barajar', async (req, res) => {
   }
 });
 
-router.post('/ordenar', async (req, res) => {
+router.post('/ordenar', ensureAuthenticated, async (req, res) => {
   const criterio = req.body.criterio || 'palo-valor';
   try {
     if (criterio === 'valor') {
@@ -39,8 +47,6 @@ router.post('/ordenar', async (req, res) => {
     } else {
       baraja.ordenarCartas();
     }
-    carta = null;
-    cartasExtraidas = [];
     res.redirect('/barajas');
   } catch (error) {
     console.error('Error al ordenar las cartas:', error);
@@ -48,7 +54,7 @@ router.post('/ordenar', async (req, res) => {
   }
 });
 
-router.post('/extraer', async (req, res) => {
+router.post('/extraer', ensureAuthenticated, async (req, res) => {
   try {
     carta = baraja.extraer();
     if (carta) {
@@ -72,7 +78,7 @@ router.post('/extraer', async (req, res) => {
   }
 });
 
-router.post('/devolver', async (req, res) => {
+router.post('/devolver', ensureAuthenticated, async (req, res) => {
   try {
     if (cartasExtraidas.length > 0) {
       const cartaDevuelta = cartasExtraidas.pop();
@@ -93,7 +99,7 @@ router.post('/devolver', async (req, res) => {
   }
 });
 
-router.post('/reset', async (req, res) => {
+router.post('/reset', ensureAuthenticated, async (req, res) => {
   try {
     baraja.reset();
     carta = null;
@@ -106,7 +112,12 @@ router.post('/reset', async (req, res) => {
 });
 
 router.post('/salir', (req, res) => {
-  res.redirect('/login');
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).send('Error al cerrar sesión.');
+    }
+    res.redirect('/login');
+  });
 });
 
 module.exports = router;

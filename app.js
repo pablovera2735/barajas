@@ -3,11 +3,20 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require('express-session');
+
 
 var indexRouter = require('./routes/index');
 var barajasRouter = require('./routes/barajas');
 
 var app = express();
+
+app.use(session({
+  secret: 'asdtGNKRfl-Fbyy',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
