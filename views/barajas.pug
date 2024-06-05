@@ -8,11 +8,16 @@ html(lang="es")
   body
     h1 Baraja de Naipes Españoles
 
+    #contador
+      p Total de cartas: #{totalCartas}
+      p Cartas extraídas: #{contadorExtraidas}
+      p Cartas devueltas: #{contadorDevueltas}
+
     #ordenar-por
-      if extraida
+      if cartasExtraidas.length > 0
         .stack
           each cartaExtraida, index in cartasExtraidas
-            .card.extraida(style=`background-image: url(${cartaExtraida.rutaImagen}); z-index: ${index}; top: ${index * 10}px; left: ${index * 10}px;`)
+            .card.extraida(style=`background-image: url(${cartaExtraida.carta.rutaImagen}); z-index: ${index};`)
       else
         img(src="/Trasera/Trasera.png", alt="Parte trasera de la carta")
       div
@@ -24,7 +29,7 @@ html(lang="es")
           div
             input(type="radio", name="criterio", value="valor" id="valor")
             label(for="valor") Solo valor
-          button(type="submit") Ordenar
+          button(class="ordenar", type="submit") Ordenar
 
     #container
       each carta in cartas

@@ -14,5 +14,3 @@ class Naipe {
   });
   
   module.exports = { Naipe, Palo };
-  
-  

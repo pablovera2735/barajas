@@ -23,14 +23,11 @@ h1 {
   margin-top: 30px;
 }
 
-
 #ordenar-por .stack {
   position: relative;
   width: 100px;
   height: 150px;
 }
-
-
 
 #ordenar-por .card.extraida {
   position: absolute;
@@ -39,6 +36,8 @@ h1 {
   background-size: cover;
   background-position: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  top: 0; /* Fija la posición en la parte superior de la pila */
+  left: 0; /* Fija la posición en la parte izquierda de la pila */
 }
 
 #ordenar-por div {
@@ -52,7 +51,6 @@ h1 {
 
 #ordenar-por form {
   display: flex;
-  flex-direction: column;
 }
 
 #container {
@@ -84,6 +82,10 @@ button {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+}
+
+.ordenar {
+  margin-top: 50px;
 }
 
 input[type="radio"] {
