@@ -85,7 +85,7 @@ router.post('/', async function(req, res) {
   try {
     const existingUser = await User.findOne({ where: { id: correo } });
     if (existingUser) {
-      return res.render('registrar', { error: 'El usuario ya existe.' });
+      return res.render('registrar', { error: 'El usuario ya está registrado. Por favor, inicie sesión.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
