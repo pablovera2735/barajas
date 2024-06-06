@@ -36,13 +36,8 @@ h1 {
   background-size: cover;
   background-position: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  top: 0; /* Fija la posición en la parte superior de la pila */
-  left: 0; /* Fija la posición en la parte izquierda de la pila */
-}
-
-#ordenar-por div {
-  display: flex;
-  flex-direction: column;
+  top: 0;
+  left: 0;
 }
 
 #ordenar-por h2 {
