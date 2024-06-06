@@ -130,6 +130,7 @@ router.get('/verify', async function(req, res) {
     if (user) {
       if (verificationTokens[email] === token) {
         delete verificationTokens[email];
+        await user.update({ isVerified: true });
         res.render('login', { error: 'Cuenta verificada. Por favor, inicie sesión.' });
       } else {
         res.status(400).send('Token de verificación inválido o expirado.');
