@@ -20,13 +20,11 @@ h1 {
   width: 100px;
   height: auto;
   margin-right: 20px;
-  margin-top: 30px;
 }
 
 #ordenar-por .stack {
   position: relative;
   width: 100px;
-  height: 150px;
 }
 
 #ordenar-por .card.extraida {
@@ -36,7 +34,7 @@ h1 {
   background-size: cover;
   background-position: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  top: 0;
+  top: -110px;
   left: 0;
 }
 
@@ -46,6 +44,14 @@ h1 {
 
 #ordenar-por form {
   display: flex;
+  flex-direction: column; /* Cambiado a columna */
+  align-items: flex-start; /* Alineación a la izquierda */
+}
+
+#ordenar-por .radio-options {
+  display: flex;
+  flex-direction: row; /* Opciones de radio en fila */
+  margin-bottom: 10px; /* Espaciado entre las opciones y el botón */
 }
 
 #container {
@@ -80,7 +86,8 @@ button {
 }
 
 .ordenar {
-  margin-top: 50px;
+  margin-top: 10px;
+  margin-left: 50px;
 }
 
 input[type="radio"] {
